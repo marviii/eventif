@@ -20,7 +20,7 @@ from core.views import home
 from subscriptions.views import subscribe
 
 urlpatterns = [
-    path("", home),
-    path("inscricao/", subscribe),
-    path("admin/", admin.site.urls),
+    path('', home),
+    path('inscricao/', subscribe),
+    path('admin/', admin.site.urls),
 ]
