@@ -17,7 +17,7 @@ class ContactPostValidTest(TestCase):
             'message': 'testezinho'
         }
 
-        response = self.client.post(reverse('contact:contact'), data=form_data)
+        response = self.client.post('/contato/', data=form_data)
         self.assertRedirects(response, '/contato/')
 
         self.assertEqual(len(mail.outbox), 1)
@@ -27,6 +27,6 @@ class ContactPostInvalidTest(TestCase):
     def test_invalid_contact_form_submission(self):
         form_data = {}  
 
-        response = self.client.post(reverse('contact:contact'), data=form_data)
+        response = self.client.post('/contato/', data=form_data)
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'contact/contact_form.html')
