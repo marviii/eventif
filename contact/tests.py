@@ -47,8 +47,14 @@ class ContactEmailTest(TestCase):
         self.assertEqual(mail.outbox[0].subject, 'Confirmação de contato')
 
         # Verifica o conteúdo do e-mail
-        self.assertIn('Novo contato recebido de teste.', mail.outbox[0].body)
-        self.assertIn('Telefone: 123456789', mail.outbox[0].body)
-        self.assertIn('Email: teste@exemplo.com', mail.outbox[0].body)
-        self.assertIn('Mensagem:\n\ntestezinho', mail.outbox[0].body)
+        body = mail.outbox[0].body
+
+        # Remove espaços em branco e quebras de linha do início e fim do texto
+        body = body.strip()
+
+        # Agora verificamos a mensagem no formato correto
+        self.assertIn('Novo contato recebido de teste.', body)
+        self.assertIn('Telefone: 123456789', body)
+        self.assertIn('Email: teste@exemplo.com', body)
+        self.assertIn('Mensagem:\n\ntestezinho', body)
 
