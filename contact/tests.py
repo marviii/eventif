@@ -1,6 +1,8 @@
 # contact/tests.py
 from django.test import TestCase
 from django.core import mail
+import email
+
 
 class ContactGetTest(TestCase):
     def test_contact_form_view(self):
@@ -31,30 +33,35 @@ class ContactPostInvalidTest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'contact/contact_form.html')
 
+
 class ContactEmailTest(TestCase):
-    def test_contact_email_sent(self):
+    def setUp(self):
         form_data = {
             'name': 'teste',
             'phone': '123456789',
             'email': 'teste@exemplo.com',
             'message': 'testezinho'
         }
+        self.response = self.client.post('/contato/', data=form_data)
+        self.email = mail.outbox[0]
 
-        response = self.client.post('/contato/', data=form_data)
-        self.assertRedirects(response, '/contato/')
+    def test_contact_email_subject(self):
+        expect = 'Confirmação de contato'
+        self.assertEqual(expect, self.email.subject)
 
-        self.assertEqual(len(mail.outbox), 1)
-        self.assertEqual(mail.outbox[0].subject, 'Confirmação de contato')
+    def test_contact_email_sender(self):
+        expect = 'contato@eventif.com.br'
+        self.assertEqual(expect, self.email.from_email)
 
-        # Obtemos o corpo do e-mail como uma lista de linhas
-        email_lines = str(mail.outbox[0].body).split('\n')
+    def test_contact_email_to(self):
+        expect = ['contato@eventif.com.br', 'teste@exemplo.com']
+        self.assertEqual(expect, self.email.to)
 
-        # Verificamos se as informações estão presentes nas linhas do e-mail
-        self.assertTrue('Nome: teste' in email_lines)
-        self.assertTrue('Telefone: 123456789' in email_lines)
-        self.assertTrue('Email: teste@exemplo.com' in email_lines)
-        self.assertTrue('Mensagem:' in email_lines)
-        self.assertTrue('testezinho' in email_lines)
+    def test_contact_email_body(self):
+        contents = ('Nome: teste', 'Telefone: 123456789', 'Email: teste@exemplo.com', 'Mensagem:\n\ntestezinho')
+        for content in contents:
+            with self.subTest():
+                self.assertIn(content, self.email.body)
 
 
 
