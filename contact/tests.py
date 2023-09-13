@@ -1,6 +1,6 @@
 # contact/tests.py
 from django.test import TestCase
-from django.urls import reverse
+from django.core import mail
 
 class ContactGetTest(TestCase):
     def test_contact_form_view(self):
