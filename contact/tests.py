@@ -44,11 +44,11 @@ class ContactEmailTest(TestCase):
         self.email = mail.outbox[0]
 
     def test_mail_subject(self):
-        expect = 'Nova mensagem de teste'
+        expect = 'Confirmação de contato'
         self.assertEqual(self.email.subject, expect)
 
     def test_mail_sender(self):
-        expect = 'teste@exemplo.com'
+        expect = 'contato@eventif.com.br'
         self.assertEqual(self.email.from_email, expect)
 
     def test_mail_recipients(self):
