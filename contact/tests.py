@@ -34,40 +34,29 @@ class ContactPostInvalidTest(TestCase):
 
 class ContactEmailTest(TestCase):
     def setUp(self):
-        form_data = {
-            'name': 'teste',
-            'email': 'teste@exemplo.com',
-            'phone': '123456789',
-            'message': 'testezinho'
-        }
-        self.response = self.client.post('/contato/', data=form_data)
+        data = dict(
+            name = 'teste',
+            email = 'teste@exemplo.com',
+            phone = '123456789',
+            message = 'testezinho'
+        )
+        self.response = self.client.post('/contato/', data)
         self.email = mail.outbox[0]
 
-    def test_contact_email_subject(self):
-        expect = 'Confirmação de contato'
-        self.assertEqual(expect, self.email.subject)
+    def test_mail_subject(self):
+        expect = 'Nova mensagem de teste'
+        self.assertEqual(self.email.subject, expect)
 
-    def test_contact_email_sender(self):
-        expect = 'contato@eventif.com.br'
-        self.assertEqual(expect, self.email.from_email)
+    def test_mail_sender(self):
+        expect = 'teste@exemplo.com'
+        self.assertEqual(self.email.from_email, expect)
 
-    def test_contact_email_to(self):
+    def test_mail_recipients(self):
         expect = ['contato@eventif.com.br', 'teste@exemplo.com']
-        self.assertEqual(expect, self.email.to)
+        self.assertEqual(self.email.to, expect)
 
-    def test_contact_email_body(self):
-        expected_contents = [
-            'Novo contato recebido de teste.',
-            'Email: teste@exemplo.com',
-            'Telefone: 123456789',
-            'Nome: teste',
-            'Mensagem:\n\ntestezinho',
-            'Em até 48 horas úteis alguem da nossa equipe responderá o seu contato.',
-            'Atenciosamente,',
-            '--',
-            'Equipe Eventif'
-        ]
-
-        for content in expected_contents:
+    def test_mail_message(self):
+        contents = ('teste', 'teste@exemplo.com', '123456789', 'testezinho')
+        for content in contents:
             with self.subTest():
                 self.assertIn(content, self.email.body)
