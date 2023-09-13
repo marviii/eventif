@@ -1,6 +1,8 @@
 # contact/tests.py
 from django.test import TestCase
 from django.core import mail
+import email
+from email import policy
 
 class ContactGetTest(TestCase):
     def test_contact_form_view(self):
@@ -46,17 +48,17 @@ class ContactEmailTest(TestCase):
         self.assertEqual(len(mail.outbox), 1)
         self.assertEqual(mail.outbox[0].subject, 'Confirmação de contato')
 
-        body = mail.outbox[0].body
+        # Obtemos o corpo do e-mail como string
+        email_body = str(mail.outbox[0].body)
 
-        name = 'Nome: teste'
-        phone = 'Telefone: 123456789'
-        email = 'Email: teste@exemplo.com'
-        message = 'Mensagem:\n\ntestezinho'
+        # Usamos a biblioteca email para analisar o e-mail
+        msg = email.message_from_string(email_body, policy=policy.default)
 
-        self.assertIn(name, body)
-        self.assertIn(phone, body)
-        self.assertIn(email, body)
-        self.assertIn(message, body)
+        # Verificamos se as informações estão no corpo do e-mail
+        self.assertIn('Nome: teste', msg.get_payload())
+        self.assertIn('Telefone: 123456789', msg.get_payload())
+        self.assertIn('Email: teste@exemplo.com', msg.get_payload())
+        self.assertIn('Mensagem:\n\ntestezinho', msg.get_payload())
 
 
 
