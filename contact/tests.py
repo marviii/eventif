@@ -48,13 +48,15 @@ class ContactEmailTest(TestCase):
 
         body = mail.outbox[0].body
 
-        body = body.strip()
+        name = 'Nome: teste'
+        phone = 'Telefone: 123456789'
+        email = 'Email: teste@exemplo.com'
+        message = 'Mensagem:\n\ntestezinho'
 
-        self.assertIn('Novo contato recebido de teste.', body)
-        self.assertIn('Telefone: 123456789', body)
-        self.assertIn('Email: teste@exemplo.com', body)
+        self.assertIn(name, body)
+        self.assertIn(phone, body)
+        self.assertIn(email, body)
+        self.assertIn(message, body)
 
-        self.assertIn('Mensagem:\n\ntestezinho', body)
-        self.assertIn('Mensagem:\ntestezinho', body) 
 
 
