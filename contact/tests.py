@@ -1,7 +1,6 @@
 # contact/tests.py
 from django.test import TestCase
 from django.urls import reverse
-from eventif.urls import urlpatterns  # Importe as urlpatterns do arquivo de URLs principal
 
 class ContactGetTest(TestCase):
     def test_contact_form_view(self):
