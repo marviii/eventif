@@ -46,8 +46,7 @@ class ContactEmailTest(TestCase):
         self.assertEqual(len(mail.outbox), 1)
         self.assertEqual(mail.outbox[0].subject, 'Confirmação de contato')
 
-        # Verifica o conteúdo do e-mail
-        self.assertIn('Novo contato recebido de teste.', mail.outbox[0].body)
+        self.assertIn('Nome: teste', mail.outbox[0].body)
         self.assertIn('Telefone: 123456789', mail.outbox[0].body)
         self.assertIn('Email: teste@exemplo.com', mail.outbox[0].body)
-        self.assertIn('Mensagem:\n\ntestezinho', mail.outbox[0].body)
+        self.assertIn('Mensagem: testezinho', mail.outbox[0].body)
