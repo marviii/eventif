@@ -31,7 +31,6 @@ ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='', cast=Csv())
 
 DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL')
 
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -42,6 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'test_without_migrations',
+    'django_extensions',
     'core',
     'subscriptions.apps.SubscriptionsConfig',
     'contact',
@@ -81,10 +81,10 @@ WSGI_APPLICATION = 'eventif.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-default_dburl = 'sqlite:///' + str(BASE_DIR / 'db.sqlite3')
+DEFAULT_DBURL = 'sqlite:///' + str(BASE_DIR / 'db.sqlite3')
 
 DATABASES = {
-    'default': config('DATABASE_URL', default=default_dburl, cast=dburl)
+    'default': config('DATABASE_URL', default=DEFAULT_DBURL, cast=dburl)
 }
 
 
@@ -136,4 +136,5 @@ EMAIL_PORT = config('EMAIL_PORT', cast=int)
 EMAIL_USE_TLS = config('EMAIL_USE_TLS', cast=bool)
 EMAIL_HOST_USER = config('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
+
 TEST_WITHOUT_MIGRATIONS_COMMAND = 'django_nose.management.commands.test.Command'
