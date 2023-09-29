@@ -2,17 +2,20 @@ from django.conf import settings
 from django.contrib import messages
 from django.core import mail
 from django.http import HttpResponse, HttpResponseRedirect, Http404
-from django.shortcuts import render
+from django.shortcuts import render, resolve_url as r
 from django.template.loader import render_to_string
 
 from subscriptions.forms import SubscriptionForm
 from subscriptions.models import Subscription
 
-def subscribe(request):
+def new(request):
     if request.method == 'POST':
         return create(request)
-    else:
-        return new(request)
+    
+    return empty_form(request)
+
+def empty_form(request):
+    return render(request, 'subscriptions/subscription_form.html', {'form': SubscriptionForm()})
 
 def create(request):
     form = SubscriptionForm(request.POST)
@@ -30,7 +33,7 @@ def create(request):
         { 'subscription': sub} 
     )
 
-    return HttpResponseRedirect('/inscricao/{}/'.format(sub.pk))
+    return HttpResponseRedirect(r('subscriptions:detail', sub.pk))
 
 def detail(request, pk):
     try:
@@ -39,9 +42,6 @@ def detail(request, pk):
         raise Http404
 
     return render(request, 'subscriptions/subscription_detail.html', {'subscription': sub})
-
-def new(request):
-    return render(request, 'subscriptions/subscription_form.html', {'form': SubscriptionForm()})
 
 def _send_mail(subject, from_, to, template_name, context):
     body = render_to_string(template_name, context)
