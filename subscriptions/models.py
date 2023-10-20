@@ -14,5 +14,5 @@ class Subscription(models.Model):
         verbose_name = 'inscrição'
         ordering = ['-created_at',]
 
-    def str__(self):
+    def __str__(self):
         return self.name
