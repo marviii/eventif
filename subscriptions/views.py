@@ -11,11 +11,7 @@ from subscriptions.models import Subscription
 def new(request):
     if request.method == 'POST':
         return create(request)
-    
     return empty_form(request)
-
-def empty_form(request):
-    return render(request, 'subscriptions/subscription_form.html', {'form': SubscriptionForm()})
 
 def create(request):
     form = SubscriptionForm(request.POST)
@@ -23,7 +19,7 @@ def create(request):
     if not form.is_valid():
         return render(request, 'subscriptions/subscription_form.html', {'form': form})
 
-    sub = Subscription.objects.create(**form.cleaned_data)
+    sub = form.save()
 
     _send_mail(
         'Confirmação de inscrição',
@@ -42,6 +38,9 @@ def detail(request, pk):
         raise Http404
 
     return render(request, 'subscriptions/subscription_detail.html', {'subscription': sub})
+
+def empty_form(request):
+    return render(request, 'subscriptions/subscription_form.html', {'form': SubscriptionForm()})
 
 def _send_mail(subject, from_, to, template_name, context):
     body = render_to_string(template_name, context)
